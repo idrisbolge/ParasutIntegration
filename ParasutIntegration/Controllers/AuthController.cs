@@ -23,5 +23,12 @@ namespace ParasutIntegration.Controllers
             var token = await _mediator.Send(new GetTokenCommands(parameters));
             return Ok(token);
         }
+
+        [HttpPost("RefreshToken")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestModel parameters)
+        {
+            var token = await _mediator.Send(new RefreshTokenCommands(parameters));
+            return Ok(token);
+        }
     }
 }

@@ -5,20 +5,20 @@ using ParasutIntegration.Util;
 
 namespace ParasutIntegration.Features.Auth.Commands
 {
-    public class GetTokenCommands : IRequest<TokenModel>
+    public class RefreshTokenCommands : IRequest<TokenModel>
     {
-        public DefaultTokenRequestModel parameters;
+        public RefreshTokenRequestModel parameters;
 
-        public GetTokenCommands(DefaultTokenRequestModel parameters)
+        public RefreshTokenCommands(RefreshTokenRequestModel parameters)
         {
             this.parameters = parameters;
         }
 
     }
 
-    public class GetTokenCommandsHandler : IRequestHandler<GetTokenCommands, TokenModel>
+    public class RefreshTokenCommandsHandler : IRequestHandler<RefreshTokenCommands, TokenModel>
     {
-        public async Task<TokenModel> Handle(GetTokenCommands request, CancellationToken cancellationToken)
+        public async Task<TokenModel> Handle(RefreshTokenCommands request, CancellationToken cancellationToken)
         {
             try
             {
