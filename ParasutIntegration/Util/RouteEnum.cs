@@ -5,10 +5,13 @@
         CreateToken,
         RefreshToken,
         GetCompanyId,
-        GetCompanyContact
+        Company,
+        Transaction,
+        Account,
+        Product,
+        Warehouse,
+        Default
     }
-
-
 
 
     public static class RouteEnumExtensions
@@ -23,7 +26,11 @@
                 RouteEnum.CreateToken => $"{BaseUrl}/oauth/token",
                 RouteEnum.RefreshToken => $"{BaseUrl}/oauth/token",
                 RouteEnum.GetCompanyId => $"{BaseUrl}/v4/me",
-                RouteEnum.GetCompanyContact => $"{BaseUrl}/v4/{CompanyId}/contacts",
+                RouteEnum.Company => $"{BaseUrl}/v4/{CompanyId}/contacts",
+                RouteEnum.Transaction => $"{BaseUrl}/v4/{CompanyId}/transactions",
+                RouteEnum.Account => $"{BaseUrl}/v4/{CompanyId}/accounts",
+                RouteEnum.Product => $"{BaseUrl}/v4/{CompanyId}/products",
+                RouteEnum.Warehouse => $"{BaseUrl}/v4/{CompanyId}/warehouses",
                 _ => throw new ArgumentException("Unknown route enum value")
             };
         }

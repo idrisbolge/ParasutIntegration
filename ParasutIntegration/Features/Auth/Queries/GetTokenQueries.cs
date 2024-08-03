@@ -10,7 +10,7 @@ namespace ParasutIntegration.Features.Auth.Queries
     {
         public async Task<string> Handle(GetTokenQueries request, CancellationToken cancellationToken)
         {
-            return "CMCqVxohU8I4Fl2eZNOgU5MbQF2LW5ULxrZ3QVhOL8g";
+            return "zaz2bBUPIuIiYK4w_fUCL_k9Mm3KYgs7PES5J44h7X8";
         }
     }
 }
