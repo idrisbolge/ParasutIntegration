@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
-using ParasutIntegration.Features.Auth.Queries;
-using ParasutIntegration.Features.General.Commands;
+using ParasutIntegration.Features.General;
 using ParasutIntegration.Models;
 using ParasutIntegration.Models.Company;
+using ParasutIntegration.Services;
 using ParasutIntegration.Util;
 
 namespace ParasutIntegration.Features.Company.Queries
@@ -22,16 +21,18 @@ namespace ParasutIntegration.Features.Company.Queries
     public class GetCompanyContactQueryHandler : IRequestHandler<GetCompanyContactQuery, IParasutResponseModel<CompanyContact>>
     {
         private readonly IMediator _mediator;
-        private static readonly HttpClient client = new HttpClient();
-        public GetCompanyContactQueryHandler(IMediator mediator)
+        private readonly IHttpService httpService;
+        public GetCompanyContactQueryHandler(IMediator mediator, IHttpService httpService)
         {
             _mediator = mediator;
+            this.httpService = httpService;
         }
+
 
         async Task<IParasutResponseModel<CompanyContact>> IRequestHandler<GetCompanyContactQuery, IParasutResponseModel<CompanyContact>>.Handle(GetCompanyContactQuery request, CancellationToken cancellationToken)
         {
             var route = RouteEnum.Company.GetRouteString() + (request.id == 0 ? "" : $"/{request.id}");
-            return await _mediator.Send(new GeneralRequestQuery<CompanyContact>(route, true, (request.id == 0)));
+            return await httpService.SendRequestAsync<CompanyContact>(url: route, isTokenRequired: true, isList: request.id == 0, parameters: null, method: HttpMethod.Get);
         }
     }
 }

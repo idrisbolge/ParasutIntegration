@@ -1,7 +1,8 @@
 ﻿using MediatR;
-using ParasutIntegration.Features.General.Commands;
+using ParasutIntegration.Features.General;
 using ParasutIntegration.Models;
 using ParasutIntegration.Models.Company;
+using ParasutIntegration.Services;
 using ParasutIntegration.Util;
 
 namespace ParasutIntegration.Features.Company.Commands
@@ -21,9 +22,11 @@ namespace ParasutIntegration.Features.Company.Commands
     public class CompanyOperationCommandsHandler : IRequestHandler<CompanyOperationCommands, IParasutResponseModel<CompanyContact>>
     {
         private readonly IMediator _mediator;
-        public CompanyOperationCommandsHandler(IMediator mediator)
+        private readonly IHttpService httpService;
+        public CompanyOperationCommandsHandler(IMediator mediator, IHttpService httpService)
         {
             _mediator = mediator;
+            this.httpService = httpService;
         }
         public async Task<IParasutResponseModel<CompanyContact>> Handle(CompanyOperationCommands request, CancellationToken cancellationToken)
         {
@@ -31,12 +34,11 @@ namespace ParasutIntegration.Features.Company.Commands
             {
                 var url = RouteEnum.Company.GetRouteString() + (request.method == HttpMethod.Post ? "" : $"/{request.parameters.Data.Id}");
 
-                var response = await _mediator.Send(
-                    new GeneralRequestCommands<ParasutRequestModel<CompanyContactRequestModel>, CompanyContact>(
+                var response = await httpService.SendRequestAsync<CompanyContact>(
                         url: url,
                         parameters: request.parameters,
                         method: request.method,
-                        isTokenRequired: true));
+                        isTokenRequired: true);
                 return response;
             }
             catch (Exception)

@@ -1,7 +1,8 @@
 ﻿using MediatR;
-using ParasutIntegration.Features.General.Commands;
+using ParasutIntegration.Features.General;
 using ParasutIntegration.Models;
 using ParasutIntegration.Models.Company;
+using ParasutIntegration.Services;
 using ParasutIntegration.Util;
 
 namespace ParasutIntegration.Features.CashOperation.Queries
@@ -19,16 +20,18 @@ namespace ParasutIntegration.Features.CashOperation.Queries
     public class GetShowTransactionQueryHandler : IRequestHandler<GetShowTransactionQuery, IParasutResponseModel<ParasutTransactionModel>>
     {
         private readonly IMediator _mediator;
-
-        public GetShowTransactionQueryHandler(IMediator mediator)
+        private readonly IHttpService httpService;
+        public GetShowTransactionQueryHandler(IMediator mediator, IHttpService httpService)
         {
             _mediator = mediator;
+            this.httpService = httpService;
         }
+       
 
         public async Task<IParasutResponseModel<ParasutTransactionModel>> Handle(GetShowTransactionQuery request, CancellationToken cancellationToken)
         {
 
-            return await _mediator.Send(new GeneralRequestQuery<ParasutTransactionModel>(url: RouteEnum.Transaction.GetRouteString() + $"/{request.Id}", isTokenRequired: true));
+            return await httpService.SendRequestAsync<ParasutTransactionModel>(url: RouteEnum.Transaction.GetRouteString() + $"/{request.Id}", isTokenRequired: true, parameters: null, method: HttpMethod.Get);
         }
     }
 

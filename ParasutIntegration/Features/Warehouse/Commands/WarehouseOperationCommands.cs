@@ -1,10 +1,10 @@
 ﻿using MediatR;
-using ParasutIntegration.Features.General.Commands;
-
 using ParasutIntegration.Models;
 using ParasutIntegration.Util;
 using ParasutIntegration.Models.Product;
 using ParasutIntegration.Models.Warehouse;
+using ParasutIntegration.Features.General;
+using ParasutIntegration.Services;
 
 namespace ParasutIntegration.Features.Warehouse.Commands
 {
@@ -23,6 +23,12 @@ namespace ParasutIntegration.Features.Warehouse.Commands
     public class WarehouseOperationCommandsHandler : IRequestHandler<WarehouseOperationCommands, IParasutResponseModel<ParasutWarehouseModel>>
     {
         private readonly IMediator _mediator;
+        private readonly IHttpService httpService;
+        public WarehouseOperationCommandsHandler(IMediator mediator, IHttpService httpService)
+        {
+            _mediator = mediator;
+            this.httpService = httpService;
+        }
         public WarehouseOperationCommandsHandler(IMediator mediator)
         {
             _mediator = mediator;
@@ -33,12 +39,11 @@ namespace ParasutIntegration.Features.Warehouse.Commands
             {
                 var url = RouteEnum.Warehouse.GetRouteString() + (request.method == HttpMethod.Post ? "" : $"/{request.parameters.Data.Id}");
 
-                var response = await _mediator.Send(
-                    new GeneralRequestCommands<ParasutRequestModel<ParasutWarehouseModel>, ParasutWarehouseModel>(
+                var response = await httpService.SendRequestAsync< ParasutWarehouseModel>(
                         url: url,
                         parameters: request.parameters,
                         method: request.method,
-                        isTokenRequired: true));
+                        isTokenRequired: true);
                 return response;
             }
             catch (Exception)

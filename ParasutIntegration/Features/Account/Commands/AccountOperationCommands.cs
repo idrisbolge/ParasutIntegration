@@ -1,9 +1,9 @@
 ﻿using MediatR;
-using ParasutIntegration.Features.General.Commands;
-using ParasutIntegration.Models.Company;
 using ParasutIntegration.Models;
 using ParasutIntegration.Util;
 using ParasutIntegration.Models.Account;
+using ParasutIntegration.Services;
+
 
 namespace ParasutIntegration.Features.Account.Commands
 {
@@ -22,9 +22,11 @@ namespace ParasutIntegration.Features.Account.Commands
     public class AccountOperationCommandsHandler : IRequestHandler<AccountOperationCommands, IParasutResponseModel<AccountModel>>
     {
         private readonly IMediator _mediator;
-        public AccountOperationCommandsHandler(IMediator mediator)
+        private readonly IHttpService httpService;
+        public AccountOperationCommandsHandler(IMediator mediator, IHttpService httpService)
         {
             _mediator = mediator;
+            this.httpService = httpService;
         }
         public async Task<IParasutResponseModel<AccountModel>> Handle(AccountOperationCommands request, CancellationToken cancellationToken)
         {
@@ -32,12 +34,12 @@ namespace ParasutIntegration.Features.Account.Commands
             {
                 var url = RouteEnum.Account.GetRouteString() + (request.method == HttpMethod.Post ? "" : $"/{request.parameters.Data.Id}");
 
-                var response = await _mediator.Send(
-                    new GeneralRequestCommands<ParasutRequestModel<AccountModel>, AccountModel>(
+                var response =
+                    await httpService.SendRequestAsync<AccountModel>(
                         url: url,
                         parameters: request.parameters,
                         method: request.method,
-                        isTokenRequired: true));
+                        isTokenRequired: true);
                 return response;
             }
             catch (Exception)

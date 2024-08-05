@@ -7,4 +7,11 @@
         EUR,
         GBP
     }
+
+    public enum OfferStatusEnum
+    {
+        Accepted,
+        Rejected,
+        Waiting
+    }
 }

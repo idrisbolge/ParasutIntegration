@@ -1,7 +1,8 @@
 ﻿using MediatR;
-using ParasutIntegration.Features.General.Commands;
+using ParasutIntegration.Features.General;
 using ParasutIntegration.Models;
 using ParasutIntegration.Models.Company;
+using ParasutIntegration.Services;
 using ParasutIntegration.Util;
 
 namespace ParasutIntegration.Features.Company.Commands
@@ -22,10 +23,13 @@ namespace ParasutIntegration.Features.Company.Commands
     public class CompanyDebitOrCreditCommandsHandler : IRequestHandler<CompanyDebitOrCreditCommands, IParasutResponseModel<ParasutTransactionModel>>
     {
         private readonly IMediator _mediator;
-        public CompanyDebitOrCreditCommandsHandler(IMediator mediator)
+        private readonly IHttpService httpService;
+        public CompanyDebitOrCreditCommandsHandler(IMediator mediator, IHttpService httpService)
         {
             _mediator = mediator;
+            this.httpService = httpService;
         }
+
         public async Task<IParasutResponseModel<ParasutTransactionModel>> Handle(CompanyDebitOrCreditCommands request, CancellationToken cancellationToken)
         {
             try
@@ -33,12 +37,11 @@ namespace ParasutIntegration.Features.Company.Commands
                 var debitOrCreditPath = $"contact_{(request.DebitOrCredit == 'D' ? "debit" : "credit")}_transactions";
                 var url = RouteEnum.Company.GetRouteString() + (request.method == HttpMethod.Post ? "" : $"/{request.parameters.Data.Id}/{debitOrCreditPath}");
 
-                var response = await _mediator.Send(
-                    new GeneralRequestCommands<ParasutRequestModel<ParasutTransactionModel>, ParasutTransactionModel>(
+                var response = await httpService.SendRequestAsync<ParasutTransactionModel>(
                         url: url,
                         parameters: request.parameters,
                         method: request.method,
-                        isTokenRequired: true));
+                        isTokenRequired: true);
                 return response;
             }
             catch (Exception)
@@ -48,6 +51,6 @@ namespace ParasutIntegration.Features.Company.Commands
             }
         }
 
-        
+
     }
 }

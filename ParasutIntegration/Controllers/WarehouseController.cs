@@ -33,28 +33,28 @@ namespace ParasutIntegration.Controllers
             return Ok(WarehouseContact);
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Post(ParasutWarehouseModel model)
-        //{
-        //    var parameters = ParasutRequestFactory.CreateRequestModel("", model);
-        //    var response = await _mediator.Send(new WarehouseOperationCommands(parameters, HttpMethod.Post));
-        //    return Ok(response);
-        //}
+        [HttpPost]
+        public async Task<IActionResult> Post(ParasutWarehouseModel model)
+        {
+            var parameters = ParasutRequestFactory.CreateRequestModel("", model);
+            var response = await _mediator.Send(new WarehouseOperationCommands(parameters, HttpMethod.Post));
+            return Ok(response);
+        }
 
-        //[HttpPut]
-        //public async Task<IActionResult> Put(ParasutWarehouseModel model, string id)
-        //{
-        //    var parameters = ParasutRequestFactory.CreateRequestModel(id, model);
-        //    var response = await _mediator.Send(new WarehouseOperationCommands(parameters, HttpMethod.Put));
-        //    return Ok(response);
-        //}
+        [HttpPut]
+        public async Task<IActionResult> Put(ParasutWarehouseModel model, string id)
+        {
+            var parameters = ParasutRequestFactory.CreateRequestModel(id, model);
+            var response = await _mediator.Send(new WarehouseOperationCommands(parameters, HttpMethod.Put));
+            return Ok(response);
+        }
 
-        //[HttpDelete]
-        //public async Task<IActionResult> Delete(string id)
-        //{
-        //    var parameters = ParasutRequestFactory.CreateRequestModel(id, new ParasutWarehouseModel());
-        //    var response = await _mediator.Send(new WarehouseOperationCommands(parameters, HttpMethod.Delete));
-        //    return Ok(response);
-        //}
+        [HttpDelete]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var parameters = ParasutRequestFactory.CreateRequestModel(id, new ParasutWarehouseModel());
+            var response = await _mediator.Send(new WarehouseOperationCommands(parameters, HttpMethod.Delete));
+            return Ok(response);
+        }
     }
 }

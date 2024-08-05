@@ -1,7 +1,8 @@
 ﻿using MediatR;
-using ParasutIntegration.Features.General.Commands;
+using ParasutIntegration.Features.General;
 using ParasutIntegration.Models;
 using ParasutIntegration.Models.Company;
+using ParasutIntegration.Services;
 using ParasutIntegration.Util;
 using System;
 
@@ -20,20 +21,21 @@ namespace ParasutIntegration.Features.CashOperation.Commands
     public class DeleteTransactionCommandsHandler : IRequestHandler<DeleteTransactionCommands, IParasutResponseModel<ParasutTransactionModel>>
     {
         private readonly IMediator _mediator;
-
-        public DeleteTransactionCommandsHandler(IMediator mediator)
+        private readonly IHttpService httpService;
+        public DeleteTransactionCommandsHandler(IMediator mediator, IHttpService httpService)
         {
             _mediator = mediator;
+            this.httpService = httpService;
         }
+
 
         public async Task<IParasutResponseModel<ParasutTransactionModel>> Handle(DeleteTransactionCommands request, CancellationToken cancellationToken)
         {
-            var response = await _mediator.Send(
-                    new GeneralRequestCommands<ParasutRequestModel<ParasutTransactionModel>, ParasutTransactionModel>(
+            var response = await httpService.SendRequestAsync<ParasutTransactionModel>(
                         url: RouteEnum.Transaction.GetRouteString() + $"/{request.Id}",
                         parameters: null,
                         method: HttpMethod.Delete,
-                        isTokenRequired: true));
+                        isTokenRequired: true);
 
 
             return response;
